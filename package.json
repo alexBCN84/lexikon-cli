@@ -1,0 +1,18 @@
+{
+  "name": "lexikon-cli",
+  "version": "1.0.0",
+  "description": "a languages vocabulary builder cli",
+  "main": "index.js",
+  "preferGlobal": true,
+  "bin": "./commands.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alejandro Gines",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^2.19.0",
+    "inquirer": "^6.2.2",
+    "mongoose": "^5.4.19"
+  }
+}

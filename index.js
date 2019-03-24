@@ -1,14 +1,5 @@
-const mongoose = require('mongoose');
-// Map global promise - get rid of warning
-mongoose.Promise = global.Promise;
-
-// Connect to db
-mongoose.connect('mongodb://localhost:27017/lexikoncli', { useNewUrlParser: true });
-const db = mongoose.connection;
-// Import model
-
 const Entry = require('./models/entry');
-
+const fs = require("fs");
 // Add Entry
 const addEntry = (entry) => {
     Entry.create(entry).then(entry => {
@@ -56,13 +47,82 @@ const listEntries = () => {
             db.close();
         });
 };
+
+// Create a directory 
+
+const createDic = name => {
+    console.info(`Going to create dictionary ${name}`);
+    fs.mkdir(`dictionaries/${name}`,function(err) {
+       if (err) {
+          return console.error(err);
+       }
+       console.info(`Dictionary ${name} created successfully!`);
+    });
+}
+
+// Delete a dictionary
+
+const deleteDic = name => {
+    console.info(`Removing dictionary ${name}`);
+    fs.rmdir(`dictionaries/${name}`, err => {
+        if (err) {
+          return console.error(err);
+        }    
+   
+        fs.readdir("dictionaries/",(err, files) => {
+            console.info(`Remaining dictionaries: ${files.length}`);
+            if (err) {
+                return console.error(err);
+            }
+            files.forEach(file => {
+                console.info(file);
+            });
+        });
+    });
+}
+
+// Create vocabulary
+const newVocab = answers => {
+    console.info("Going to write into existing file");
+    fs.writeFile(`dictionaries/${answers.dictionary}/${answers.name}.txt`, 'new vocabulary', err => {
+    if (err) {
+        return console.error(err);
+    }
+   
+   console.info("Vocabulary created successfully!");
+   console.info("Let's read the content of the vocabulary list");
+   
+   fs.readFile(`dictionaries/${answers.dictionary}/${answers.name}.txt`, (err, data) => {
+      if (err) {
+         return console.error(err);
+      }
+      console.info("Asynchronous read: " + data.toString());
+   });
+});
+}
+
+// Delete vocabulary
+const removeVocab = answers => {
+    console.info("Going to delete an existing file");
+    fs.unlink(`dictionaries/${answers.dictionary}/${answers.name}.txt`, err => {
+        if (err) {
+            return console.error(err);
+        }
+        console.info("File deleted successfully!");
+    });
+}
+
 // Export All Methods
 module.exports = {
     addEntry,
     findEntry,
     updateEntry,
     removeEntry,
-    listEntries
+    listEntries,
+    createDic,
+    deleteDic,
+    newVocab,
+    removeVocab
 };
 
 // the last thing you have to do is create a symlink in order to use your program

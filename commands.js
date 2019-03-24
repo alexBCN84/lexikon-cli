@@ -9,7 +9,11 @@ const {
     findEntry,
     updateEntry,
     removeEntry,
-    listEntries
+    listEntries,
+    createDic,
+    deleteDic,
+    newVocab,
+    removeVocab
 } = require('./index.js');
 
 // Entry questions
@@ -24,6 +28,18 @@ const questions = [{
         message: 'word in target language'
     }
 ];
+
+// Vocab questions
+const vocabQuestions = [{
+    type: 'input',
+    name: 'dictionary',
+    message: 'chose a dictionary'
+},
+{
+    type: 'input',
+    name: 'name',
+    message: 'chose a name for your vocabulary list'
+}]
 
 program
     .version('1.0.0')
@@ -69,5 +85,36 @@ program
     .alias('l')
     .description('List all words')
     .action(() => listEntries());
+
+
+// Create directory
+
+program
+    .command('newdic <name>')
+    .alias('nd')
+    .action(name => createDic(name));
+
+// Remove dictionary
+
+program
+    .command('deldic <name>')
+    .alias('dd')
+    .action(name => deleteDic(name));
+
+// Create a vocabulary list
+program
+    .command('newvocab')
+    .alias('nv')
+    .action(() => {
+        prompt(vocabQuestions).then(answers => newVocab(answers));
+    });
+
+// remove a vocabulary list
+program
+    .command('removevocab')
+    .alias('rv')
+    .action(() => {
+        prompt(vocabQuestions).then(answers => removeVocab(answers));
+    });;
 
 program.parse(process.argv);
